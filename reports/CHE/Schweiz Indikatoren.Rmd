@@ -54,10 +54,9 @@ svytotal(~postaxincomep1,subset(silc.dprh.svy, postaxincomep1>=as.numeric(svyqua
 ```{r Ungleichheitsindikatoren nach P1}
 #Erstellung Tabelle
 TabelleP1 <- data.frame(MeanIncomeP1, MedianIncomeP1, GiniP1, P8020P1, Top10ShareP1)
-colnames(TabelleP1) <- c("Mean", "Median", "Gini", "P80/20", "Top 10% Share")
+colnames(TabelleP1) <- c("Mittelwert", "Median", "Gini", "P80/20", "Top 10% Share")
 rownames(TabelleP1) <- c("Vorsteuer Faktoreinkommen", "Vorsteuer Nationaleinkommen", "Nachsteuer Verfügbares Einkommen")
 ```
-Nach dem P1 Einkommenskonzept zeigen sich erwartbare Effekte entlang der Einkommensumverteilung. Nimmt der Gini Koeffizient für das Vorsteuer-Faktoreinkommen noch `r TabelleP1[3, 1]` an, sinkt er für das verfügbare Einkommen auf `r TabelleP1[3, 3]`. 
 
 
 
@@ -104,6 +103,6 @@ svytotal(~postaxincomep2,subset(silc.dprhp2.svy, postaxincomep2>=as.numeric(svyq
 
 #Erstellung Tabelle
 TabelleP2 <- data.frame(MeanIncomeP2, MedianIncomeP2, GiniP2, P8020P2, Top10ShareP2)
-colnames(TabelleP2) <- c("Mean", "Median", "Gini", "P80/20", "Top 10% Share")
+colnames(TabelleP2) <- c("Mittelwert", "Median", "Gini", "P80/20", "Top 10% Share")
 rownames(TabelleP2) <- c("Vorsteuer Faktoreinkommen", "Vorsteuer Nationaleinkommen", "Nachsteuer Verfügbares Einkommen")
 ```
