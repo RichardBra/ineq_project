@@ -1,0 +1,28 @@
+---
+title: "Ergebnisse Genau"
+author: "Branco & Zadeyan"
+date: "03 Jänner 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r echo=FALSE}
+# Durchschnittswerte der verschiedenen Einkommen nach P1 bzw. P2 von 2008 bis 2016
+MeanP1T
+MeanP2T
+# Medianwerte der verschiedenen Einkommen nach P1 bzw. P2 von 2008 bis 2016
+MedianP1T
+MedianP2T
+# Gini Koeffizienten der verschiedenen Einkommen nach P1 bzw. P2 von 2008 bis 2016
+GiniP1T
+GiniP2T
+# P80/P20 Ratio der verschiedenen Einkommen nach P1 bzw. P2 von 2008 bis 2016
+P8020P1T
+P8020P2T
+# Top 10% Share der verschiedenen Einkommen nach P1 bzw. P2 von 2008 bis 2016
+T10SP1T
+T10SP2T
+```
