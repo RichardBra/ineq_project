@@ -932,10 +932,92 @@ colnames(T10SP2T) <- c(2008:2016)
 rownames(T10SP2T) <- c("Vorsteuer Faktoreinkommen", "Vorsteuer Nationaleinkommen", "Nachsteuer Verfügbares Einkommen")
 ```
 
+#Grafiken über Zeitreihen
+```{r Mean Faktoreinkommen, include=FALSE}
+years <-c (round(2008:2016), digits=0)
+
+MFIncP1 <- rbind(T2008P1[1,1], T2009P1[1,1], T2010P1[1,1], T2011P1[1,1], T2012P1[1,1], T2013P1[1,1], T2014P1[1,1], T2015P1[1,1], T2016P1[1,1])
+MFIncP1 <- cbind(years, MFIncP1)
+MFIncP1<-data.frame(MFIncP1)
+colnames(MFIncP1)<-c("years","factorincome" )
+plot(MFIncP1$years, MFIncP1$factorincome, xlab="Jahr", ylab="mittleres vorsteuer Faktoreinkommen")
+```
+
+```{r Mean Verfügbares Einkommen, include=FALSE}
+#Verfügbares Einkommen
+MVIncP1 <- rbind(T2008P1[3,1], T2009P1[3,1], T2010P1[3,1], T2011P1[3,1], T2012P1[3,1], T2013P1[3,1], T2014P1[3,1], T2015P1[3,1], T2016P1[3,1])
+MVIncP1 <- cbind(years, MVIncP1)
+MVIncP1<-data.frame(MVIncP1)
+colnames(MVIncP1)<-c("years","vfgbinc" )
+plot(MVIncP1$years, MVIncP1$vfgbinc, xlab="Jahr", ylab="mittleres nachsteuer verfügbares einkommen")
+```
+
+```{r Median Faktoreinkommen, include=FALSE}
+mFIncP1 <- rbind(T2008P1[1,2], T2009P1[1,2], T2010P1[1,2], T2011P1[1,2], T2012P1[1,2], T2013P1[1,2], T2014P1[1,2], T2015P1[1,2], T2016P1[1,2])
+mFIncP1 <- cbind(years, mFIncP1)
+mFIncP1<-data.frame(mFIncP1)
+colnames(mFIncP1)<-c("years","factorincome" )
+plot(mFIncP1$years, mFIncP1$factorincome, xlab="Jahr", ylab="Median vorsteuer Faktoreinkommen")
+```
+
+```{r Median Verfügbares Einkommen, include=FALSE}
+#Verfügbares Einkommen
+mVIncP1 <- rbind(T2008P1[3,2], T2009P1[3,2], T2010P1[3,2], T2011P1[3,2], T2012P1[3,2], T2013P1[3,2], T2014P1[3,2], T2015P1[3,2], T2016P1[3,2])
+mVIncP1 <- cbind(years, mVIncP1)
+mVIncP1<-data.frame(mVIncP1)
+colnames(mVIncP1)<-c("years","vfgbinc" )
+plot(mVIncP1$years, mVIncP1$vfgbinc, xlab="Jahr", ylab="Median nachsteuer verfügbares einkommen")
+```
 
 
+```{r Gini Faktor Einkommen, include=FALSE}
+GFIncP1 <- rbind(T2008P1[1,3], T2009P1[1,3], T2010P1[1,3], T2011P1[1,3], T2012P1[1,3], T2013P1[1,3], T2014P1[1,3], T2015P1[1,3], T2016P1[1,3])
+GFIncP1 <- cbind(years, GFIncP1)
+GFIncP1<-data.frame(GFIncP1)
+colnames(GFIncP1)<-c("years","factorincome" )
+plot(GFIncP1$years, GFIncP1$factorincome, xlab="Jahr", ylab="Gini vorsteuer Faktoreinkommen")
+```
 
+```{r Gini verfügbares Einkommen, include=FALSE}
+GVIncP1 <- rbind(T2008P1[3,3], T2009P1[3,3], T2010P1[3,3], T2011P1[3,3], T2012P1[3,3], T2013P1[3,3], T2014P1[3,3], T2015P1[3,3], T2016P1[3,3])
+GVIncP1 <- cbind(years, GVIncP1)
+GVIncP1<-data.frame(GVIncP1)
+colnames(GVIncP1)<-c("years","vfgbinc" )
+plot(GVIncP1$years, GVIncP1$vfgbinc, xlab="Jahr", ylab="Gini nachsteuer verfügbares einkommen")
+```
 
+```{r P8020 Faktor Einkommen, include=FALSE}
+PFIncP1 <- rbind(T2008P1[1,4], T2009P1[1,4], T2010P1[1,4], T2011P1[1,4], T2012P1[1,4], T2013P1[1,4], T2014P1[1,4], T2015P1[1,4], T2016P1[1,4])
+PFIncP1 <- cbind(years, PFIncP1)
+PFIncP1<-data.frame(PFIncP1)
+colnames(PFIncP1)<-c("years","factorincome" )
+plot(PFIncP1$years, PFIncP1$factorincome, xlab="Jahr", ylab="P80/20 vorsteuer Faktoreinkommen")
+```
+
+```{r P8020 verfügbares Einkommen, include=FALSE}
+#Verfügbares Einkommen
+PVIncP1 <- rbind(T2008P1[3,4], T2009P1[3,4], T2010P1[3,4], T2011P1[3,4], T2012P1[3,4], T2013P1[3,4], T2014P1[3,4], T2015P1[3,4], T2016P1[3,4])
+PVIncP1 <- cbind(years, PVIncP1)
+PVIncP1<-data.frame(PVIncP1)
+colnames(PVIncP1)<-c("years","vfgbinc" )
+plot(PVIncP1$years, PVIncP1$vfgbinc, xlab="Jahr", ylab="P80/20 nachsteuer verfügbares einkommen")
+```
+
+```{r T10S Faktor Einkommen, include=FALSE}
+TFIncP1 <- rbind(T2008P1[1,5], T2009P1[1,5], T2010P1[1,5], T2011P1[1,5], T2012P1[1,5], T2013P1[1,5], T2014P1[1,5], T2015P1[1,5], T2016P1[1,5])
+TFIncP1 <- cbind(years, TFIncP1)
+TFIncP1<-data.frame(TFIncP1)
+colnames(TFIncP1)<-c("years","factorincome" )
+plot(TFIncP1$years, TFIncP1$factorincome, xlab="Jahr", ylab="Top 10% vorsteuer Faktoreinkommen")
+```
+
+```{r T10S Verfügbares Einkommen, include=FALSE}
+TVIncP1 <- rbind(T2008P1[3,5], T2009P1[3,5], T2010P1[3,5], T2011P1[3,5], T2012P1[3,5], T2013P1[3,5], T2014P1[3,5], T2015P1[3,5], T2016P1[3,5])
+TVIncP1 <- cbind(years, TVIncP1)
+TVIncP1<-data.frame(TVIncP1)
+colnames(TVIncP1)<-c("years","vfgbinc" )
+plot(TVIncP1$years, TVIncP1$vfgbinc, xlab="Jahr", ylab="Top 10% nachsteuer verfügbares einkommen")
+```
 
 
 
