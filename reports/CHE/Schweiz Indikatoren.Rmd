@@ -48,10 +48,8 @@ Top10ShareP1 <- c(
 svytotal(~factorincomep1,subset(silc.dprh.svy, factorincomep1>=as.numeric(svyquantile(~factorincomep1,silc.dprh.svy,quantile=c(0.9)))))/svytotal(~factorincomep1,silc.dprh.svy),
 svytotal(~nationalincomep1,subset(silc.dprh.svy, nationalincomep1>=as.numeric(svyquantile(~nationalincomep1,silc.dprh.svy,quantile=c(0.9)))))/svytotal(~nationalincomep1,silc.dprh.svy),
 svytotal(~postaxincomep1,subset(silc.dprh.svy, postaxincomep1>=as.numeric(svyquantile(~postaxincomep1,silc.dprh.svy,quantile=c(0.9)))))/svytotal(~postaxincomep1,silc.dprh.svy))
-```
 
-##Ungleichheitsindikatoren nach P1
-```{r Ungleichheitsindikatoren nach P1}
+
 #Erstellung Tabelle
 TabelleP1 <- data.frame(MeanIncomeP1, MedianIncomeP1, GiniP1, P8020P1, Top10ShareP1)
 colnames(TabelleP1) <- c("Mittelwert", "Median", "Gini", "P80/20", "Top 10% Share")
@@ -106,3 +104,5 @@ TabelleP2 <- data.frame(MeanIncomeP2, MedianIncomeP2, GiniP2, P8020P2, Top10Shar
 colnames(TabelleP2) <- c("Mittelwert", "Median", "Gini", "P80/20", "Top 10% Share")
 rownames(TabelleP2) <- c("Vorsteuer Faktoreinkommen", "Vorsteuer Nationaleinkommen", "Nachsteuer Verfügbares Einkommen")
 ```
+
+# ALS NÄCHSTES BITTE Zeitreihe INDIKATOREN FILE AUSFÜHREN

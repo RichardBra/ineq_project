@@ -25,3 +25,5 @@ if(!exists("pg")) {
   message("Connection pg already exists.")
 }
 ```
+
+# ALS NÄCHSTES BITTE Datenvorbereitung FILE AUSFÜHREN

@@ -11,8 +11,6 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Dieses File dient dem Download sowie der Vorbereitung der Daten um die Ungleichheitsindikatoren für die Schweiz zu berechnen. 
 ```{r Prepare Data, include=FALSE}
-library(dplyr)
-
 
 # Download der Daten und Zusammenführen der einzelnen Jahre mit dem pp/dd/hh/rr file.
 silc.pp <- tbl(pg, "pp") %>%

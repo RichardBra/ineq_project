@@ -886,7 +886,7 @@ colnames(T2016P2)<- c("Mean 2016", "Median 2016", "Gini 2016", "P80/20 2016", "T
 ```
 
 
-
+#Tabelle über alle Zeitreihen
 ```{r Tabellen P1, include=FALSE}
 MeanP1T <- data.frame(T2008P1$`Mean 2008`, T2009P1$`Mean 2009`, T2010P1$`Mean 2010`, T2011P1$`Mean 2011`, T2012P1$`Mean 2012`, T2013P1$`Mean 2013`, T2014P1$`Mean 2014`, T2015P1$`Mean 2015`, T2016P1$`Mean 2016`)
 colnames(MeanP1T) <- c(2008:2016)
@@ -910,7 +910,7 @@ rownames(T10SP1T) <- c("Vorsteuer Faktoreinkommen", "Vorsteuer Nationaleinkommen
 
 ```
 
-```{r Mean Tabelle P2, include=FALSE}
+```{r Tabellen P2, include=FALSE}
 MeanP2T <- data.frame(T2008P2$`Mean 2008`, T2009P2$`Mean 2009`, T2010P2$`Mean 2010`, T2011P2$`Mean 2011`, T2012P2$`Mean 2012`, T2013P2$`Mean 2013`, T2014P2$`Mean 2014`, T2015P2$`Mean 2015`, T2016P2$`Mean 2016`)
 colnames(MeanP2T) <- c(2008:2016)
 rownames(MeanP2T) <- c("Vorsteuer Faktoreinkommen", "Vorsteuer Nationaleinkommen", "Nachsteuer Verfügbares Einkommen")
