@@ -1,0 +1,206 @@
+---
+title: "2 Teil"
+author: "Branco & Zadeyan"
+date: "03 Jänner 2019"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# 2. Teil Analyse von (unselbtständigen) Arbeitseinkommen in Bezug auf die Herkunft, Bildung, Alter und Geschlecht
+
+
+```{r Daten vorbereiten}
+#Dataframe für OLS Schätzungen
+silc.dprh.ols <- silc.dprh 
+
+
+# NAs durch 0 ersetzen 
+silc.dprh.ols$py010g[is.na(silc.dprh.ols$py010g)] <- 0
+silc.dprh.ols$pl060[is.na(silc.dprh.ols$pl060)] <- 0
+silc.dprh.ols$pl100[is.na(silc.dprh.ols$pl100)] <- 0
+silc.dprh.ols$pl073[is.na(silc.dprh.ols$pl073)] <- 0
+silc.dprh.ols$pl074[is.na(silc.dprh.ols$pl074)] <- 0
+
+# Nur positive Einkommen bzw. Arbeitszeit >0 Stunden
+silc.dprh.ols <- silc.dprh.ols %>% filter(py010g>0 & pl060>0 & (pl073 + pl074)>0)
+#Stundenlohn berechnen
+silc.dprh.ols <- silc.dprh.ols %>% mutate(hwages = py010g / ((pl060 + pl100)*pmin(12,pl073 + pl074)*52/12) )
+
+# NAs bei Inländer Variable rausfiltern und Dummys bilden
+silc.dprh.ols <- silc.dprh.ols %>% filter(pb210 != "")
+silc.dprh.ols <- silc.dprh.ols %>% mutate(LOC = ifelse(pb210 == "LOC", 1, 0))
+silc.dprh.ols <- silc.dprh.ols %>% mutate(EU = ifelse(pb210 == "EU", 1, 0))
+silc.dprh.ols <- silc.dprh.ols %>% mutate(OTH = ifelse(pb210 == "OTH", 1, 0))
+
+# Dummy für Geschlecht bilden (1 wenn weiblich 0 wenn männlich)
+silc.dprh.ols <- silc.dprh.ols %>% mutate(female = ifelse(pb150 == "2", 1, 0))
+
+# Da nur Daten ab 2014 verwendet werden (vorher fehlen Werte für pl073 und pl074) sind Bildungslevel nur mit neueren Level im Sample. (Keine 1,2,3,4,5 Stufen)
+# Preprimary rausfiltern und Dummys für Bildung erstellen (Preprimary hat nur 9 Beobachtungen und wird daher von Berechnung ausgeschlossen),
+silc.dprh.ols <- silc.dprh.ols %>% filter(pe040 >= 100)
+silc.dprh.ols <- silc.dprh.ols %>% mutate(primary=ifelse(pe040 == 100, 1, 0))
+silc.dprh.ols <- silc.dprh.ols %>% mutate(lowersec=ifelse(pe040 == 200, 1, 0))
+silc.dprh.ols <- silc.dprh.ols %>% mutate(uppersec=ifelse(pe040 >= 344 & pe040 <=354, 1, 0))
+silc.dprh.ols <- silc.dprh.ols %>% mutate(uni=ifelse(pe040 == 500, 1, 0))
+
+# Dummy für Langzeitarbeitslose (Selbstdefinition: Wer 6 Monate oder länger im Beobachtungsjahr arbeitslos war)
+silc.dprh.ols <- silc.dprh.ols %>% mutate(unempl=ifelse(pl080 >=6, 1, 0))
+
+# Langzeitarbeitslose nach Herkunft
+silc.dprh.ols <- silc.dprh.ols %>% mutate(Auslunemp = OTH*unempl)
+silc.dprh.ols <- silc.dprh.ols %>% mutate(EUunemp = EU*unempl)
+silc.dprh.ols <- silc.dprh.ols %>% mutate(Inlunemp = LOC*unempl)
+
+# Akademiker nach Herkunft
+silc.dprh.ols <- silc.dprh.ols %>% mutate(Auslakad = OTH*uni)
+silc.dprh.ols <- silc.dprh.ols %>% mutate(EUakad = EU*uni)
+silc.dprh.ols <- silc.dprh.ols %>% mutate(Inlakad = LOC*uni)
+
+# Stundenlohn nach Herkunft
+silc.dprh.ols <- silc.dprh.ols %>% mutate(Auslhwage = OTH*hwages)
+silc.dprh.ols <- silc.dprh.ols %>% mutate(EUhwage = EU*hwages)
+silc.dprh.ols <- silc.dprh.ols %>% mutate(Inlhwage = LOC*hwages)
+
+# Data File auf NAs überprüfen
+summary(is.na(silc.dprh.ols))
+#Survey Design vorbereiten
+silc.dprh.svy.ols <- svydesign(ids=~id_h,
+                       strata=~db040,
+                       weights=~db090,
+                       data=(silc.dprh.ols)) %>% convey_prep()
+```
+
+
+```{r Regression verschiedener Kontrollvariablen auf Stundenlohn}
+#Allgemeine Regression um Einfluss der Variablen zu überprüfen
+wageols <- svyglm(log(hwages) ~ age + I(age^2) + EU + OTH + uni + uppersec + lowersec +  primary + female, silc.dprh.svy.ols)
+summary(wageols)
+# Allgemeine Regression mit Gender Interaction Term und Drittstaat
+wageols1 <- svyglm(log(hwages) ~ age + I(age^2) + EU + OTH + uni + uppersec + lowersec +  primary + female + female*OTH, silc.dprh.svy.ols)
+summary(wageols1)
+# Allgemeine Regression mit Gender Interaction Term und EU-Ausländern
+wageols2 <- svyglm(log(hwages) ~ age + I(age^2) + EU + OTH + uni + uppersec + lowersec +  primary + female + female*EU, silc.dprh.svy.ols)
+summary(wageols2)
+
+#INLÄNDER VS DRITTSTAAT
+#Regression zur Überprüfung ob Tertiäre zwischen In und (Drittstaat) Ausländern unterschiedlich gewertet wird
+eduothols1 <- svyglm(log(hwages) ~ age + I(age^2) + EU + OTH + uni + uppersec + lowersec +  primary + female + uni*OTH , silc.dprh.svy.ols)
+summary(eduothols1)
+
+#Regression zur Überprüfung ob Höhere Sekundäre Bildung zwischen In und (Drittstaat) Ausländern unterschiedlich gewertet wird
+eduothols2 <- svyglm(log(hwages) ~ age + I(age^2) + EU + OTH + uni + uppersec + lowersec +  primary + female + uppersec*OTH , silc.dprh.svy.ols)
+summary(eduothols2)
+
+#Regression zur Überprüfung ob Untere Sekundäre Bildung zwischen In und (Drittstaat) Ausländern unterschiedlich gewertet wird
+eduothols3 <- svyglm(log(hwages) ~ age + I(age^2)+ EU + OTH + uni + uppersec + lowersec +  primary + female+ lowersec*OTH , silc.dprh.svy.ols)
+summary(eduothols3)
+
+
+# INLÄNDER VS EU
+#Regression zur Überprüfung ob Tertiäre Bildung zwischen In und (EU) Ausländern unterschiedlich gewertet wird
+edueuols1 <- svyglm(log(hwages) ~ age + I(age^2) + EU + OTH + uni + uppersec + lowersec +  primary + female+ uni*EU  , silc.dprh.svy.ols)
+summary(edueuols1)
+
+#Regression zur Überprüfung ob Höhere Sekundäre Bildung zwischen In und (EU) Ausländern unterschiedlich gewertet wird
+edueuols2 <- svyglm(log(hwages) ~ age + I(age^2)+ EU + OTH + uni + uppersec + lowersec +  primary + female + uppersec*EU , silc.dprh.svy.ols)
+summary(edueuols2)
+
+#Regression zur Überprüfung ob Untere Sekundäre Bildung zwischen In und (EU) Ausländern unterschiedlich gewertet wird
+edueuols3 <- svyglm(log(hwages) ~ age + I(age^2) + EU + OTH + uni + uppersec + lowersec +  primary + female + lowersec*EU , silc.dprh.svy.ols)
+summary(edueuols3)
+```
+
+
+```{r}
+# Vergleich von In und Ausländern (EU und Drittstaaten getrennt beobachtet)
+
+# Survey Design für Ausländer aus Drittstaaten
+silc.svy.ausl <- svydesign(ids=~id_h,
+                       strata=~db040,
+                       weights=~db090,
+                       data=(silc.dprh.ols %>% filter(OTH == 1))) %>% convey_prep()
+
+#Akademikeranteil von Drittstaatenangehörigen
+Auslakad <- svytotal(~Auslakad, silc.svy.ausl)/svytotal(~OTH, silc.svy.ausl)
+TAuslakad <- data.frame(Auslakad)
+
+# Durchschnitts- bzw. Medianeinkommen von Drittstaatenangehörigen
+AuslMean <- svymean(~hwages, silc.svy.ausl)
+AuslMedian <- svyquantile(~hwages, silc.svy.ausl, quantile=c(0.5))
+TAuslMean <- data.frame(AuslMean)
+TAuslMedian <- data.frame(AuslMedian)
+
+# Gini für Stundenlöhne von Drittstaatenangehörigen
+AuslGini <- svygini(~hwages, silc.svy.ausl)
+TAuslGini <- data.frame(AuslGini)
+
+# Survey Design für Ausländer aus der EU
+silc.svy.eu <- svydesign(ids=~id_h,
+                       strata=~db040,
+                       weights=~db090,
+                       data=(silc.dprh.ols %>% filter(EU == 1))) %>% convey_prep()
+
+# Akademikeranteil für Ausländer aus der EU
+EUakad <- svytotal(~EUakad, silc.svy.eu)/svytotal(~EU, silc.svy.eu)
+TEUakad <- data.frame(EUakad)
+
+# Durchschnitts- bzw. Medianeinkommen für Ausländer aus der EU
+EUMean <- svymean(~hwages, silc.svy.eu)
+EUMedian <- svyquantile(~hwages, silc.svy.eu, quantile=c(0.5))
+TEUMean <- data.frame(EUMean)
+TEUMedian <- data.frame(EUMedian)
+
+# Gini für Stundenlöhne von EU-Ausländern
+EUGini <- svygini(~hwages, silc.svy.eu)
+TEUGini <- data.frame(EUGini)
+
+
+# Survey Design für Inländer
+silc.svy.inl <- svydesign(ids=~id_h,
+                       strata=~db040,
+                       weights=~db090,
+                       data=(silc.dprh.ols %>% filter(LOC == 1))) %>% convey_prep()
+
+#Akademikeranteil Inländer
+Inlakad <- svytotal(~Inlakad, silc.svy.inl)/svytotal(~LOC, silc.svy.inl)
+TInlakad <- data.frame(Inlakad)
+
+# Durchschnitts- bzw. Medianeinkommen von Inländern
+InlMean <- svymean(~hwages, silc.svy.inl)
+InlMedian <- svyquantile(~hwages, silc.svy.inl,quantile=c(0.5))
+TInlMean <- data.frame(InlMean)
+TInlMedian <- data.frame(InlMedian)
+
+# Gini für Stundenlöhne von Inländer
+InlGini <- svygini(~hwages, silc.svy.inl)
+TInlGini <- data.frame(InlGini)
+
+# Tabelle für Durschnittseinkommen erstellen
+MeanIncomeTabelle <- data.frame(TAuslMean$"mean", TEUMean$"mean", TInlMean$"mean")
+colnames(MeanIncomeTabelle) <- c("Durchschnittslohn pro Stunde - Drittstaat", "Durchschnittslohn pro Stunde - EU", "Durchschnittslohn pro Stunde - Inländer")
+View(MeanIncomeTabelle)
+
+#Tabelle für Medianeinkommen
+MedianIncomeTabelle <- data.frame(TAuslMedian$"X0.5", TEUMedian$"X0.5", TInlMedian$"X0.5")
+colnames(MedianIncomeTabelle) <- c("Medianlohn pro Stunde - Drittstaat", "Medianlohn pro Stunde - EU", "Medianlohn pro Stunde - Inländer")
+View(MedianIncomeTabelle)
+
+# Tabelle für Akademikeranteil
+Anteiltabelle <- data.frame(TAuslakad$"total", TEUakad$"total", TInlakad$"total")
+colnames(Anteiltabelle)<- c("Akademikeranteil Drittstaat", "Akademikeranteil EU", "Akademikeranteil Inländer")
+View(Anteiltabelle)
+
+# Tabelle für Gini erstellen
+GiniTabelle <- data.frame(TAuslGini$"gini", TEUGini$"gini", TInlGini$"gini")
+colnames(GiniTabelle) <- c("Gini Drittstaat", "Gini EU", "Gini Inländer")
+View(GiniTabelle)
+
+```
+
+
+
+

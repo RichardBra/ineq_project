@@ -1,0 +1,995 @@
+---
+title: "Indikatoren"
+author: "Branco & Zadeyan"
+date: "03 JÃ¤nner 2019"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+#Achtung großes File Ausführung könnte einige Minuten dauern. Hier werden die verschiedenen Ungleichheitsindikatoren pro Jahr (2008-2016) errechnet anschließend werden die Ergebnisse in Tabellen und Graphiken dargestellt.
+```{r Ungleichheitsindikatoren nach P1, include=FALSE}
+#Definition Jahr; 
+year <- 2008
+#Erstellung des Survey Designs
+DatenP1.svy <- svydesign(ids=~id_h,
+                       strata=~db040,
+                       weights=~db090,
+                       data=(DatenP1 %>% filter(pb010==year))) %>% convey_prep()
+
+# Mittelwert von Factor, National und Post Tax Disposable Income 
+MeanIncomeP1 <- c(
+  svymean(~factorincomep1,DatenP1.svy),
+  svymean(~nationalincomep1,DatenP1.svy),
+  svymean(~postaxincomep1,DatenP1.svy))
+
+# Median von Factor, National und Post Tax Disposable Income
+MedianIncomeP1 <- c(
+  svyquantile(~factorincomep1,DatenP1.svy,quantile=c(0.5)),
+  svyquantile(~nationalincomep1,DatenP1.svy,quantile=c(0.5)),
+  svyquantile(~postaxincomep1,DatenP1.svy,quantile=c(0.5)))
+
+# Gini von Factor, Natonal und Post Tax Disposable Income
+GiniP1 <- c(
+  svygini(~factorincomep1, DatenP1.svy),
+  svygini(~nationalincomep1, DatenP1.svy),
+  svygini(~postaxincomep1, DatenP1.svy))
+
+# P80/P20 von Factor, National und Post Tax Disposable Income
+P8020P1 <- c(
+  svyqsr(~factorincomep1,DatenP1.svy),
+  svyqsr(~nationalincomep1,DatenP1.svy),
+  svyqsr(~postaxincomep1,DatenP1.svy))
+
+# Top 10% Anteil von Factor, National und Post Tax Disposable Income
+Top10ShareP1 <- c(
+svytotal(~factorincomep1,subset(DatenP1.svy, factorincomep1>=as.numeric(svyquantile(~factorincomep1,DatenP1.svy,quantile=c(0.9)))))/svytotal(~factorincomep1,DatenP1.svy),
+svytotal(~nationalincomep1,subset(DatenP1.svy, nationalincomep1>=as.numeric(svyquantile(~nationalincomep1,DatenP1.svy,quantile=c(0.9)))))/svytotal(~nationalincomep1,DatenP1.svy),
+svytotal(~postaxincomep1,subset(DatenP1.svy, postaxincomep1>=as.numeric(svyquantile(~postaxincomep1,DatenP1.svy,quantile=c(0.9)))))/svytotal(~postaxincomep1,DatenP1.svy))
+
+#Erstellung Tabelle
+T2008P1 <- data.frame(MeanIncomeP1, MedianIncomeP1, GiniP1, P8020P1, Top10ShareP1)
+colnames(T2008P1)<- c("Mean 2008", "Median 2008", "Gini 2008", "P80/20 2008", "Top 10% Share 2008")
+```
+
+
+```{r Ungleichheitsindikatoren nach P2, include=FALSE}
+
+#Definition Jahr; 
+year <- 2008
+
+#Erstellung des Survey Designs 
+DatenP2.svy <- svydesign(ids=~id_h,
+                       strata=~db040,
+                       weights=~db090,
+                       data=(DatenP2 %>% filter(pb010==year))) %>% convey_prep()
+
+# Mittelwert von Factor, National und Post Tax Disposable Income 
+MeanIncomeP2 <- c(
+  svymean(~factorincomep2,DatenP2.svy),
+  svymean(~nationalincomep2,DatenP2.svy),
+  svymean(~postaxincomep2,DatenP2.svy))
+
+# Median von Factor, National und Post Tax Disposable Income
+MedianIncomeP2 <- c(
+  svyquantile(~factorincomep2,DatenP2.svy,quantile=c(0.5)),
+  svyquantile(~nationalincomep2,DatenP2.svy,quantile=c(0.5)),
+  svyquantile(~postaxincomep2,DatenP2.svy,quantile=c(0.5)))
+
+# Gini von Factor, Natonal und Post Tax Disposable Income
+GiniP2 <- c(
+  svygini(~factorincomep2, DatenP2.svy),
+  svygini(~nationalincomep2, DatenP2.svy),
+  svygini(~postaxincomep2, DatenP2.svy))
+
+# P80/P20 von Factor, National und Post Tax Disposable Income
+P8020P2 <- c(
+  svyqsr(~factorincomep2,DatenP2.svy),
+  svyqsr(~nationalincomep2,DatenP2.svy),
+  svyqsr(~postaxincomep2,DatenP2.svy))
+
+# Top 10% Anteil von Factor, National und Post Tax Disposable Income
+Top10ShareP2 <- c(
+svytotal(~factorincomep2,subset(DatenP2.svy, factorincomep2>=as.numeric(svyquantile(~factorincomep2,DatenP2.svy,quantile=c(0.9)))))/svytotal(~factorincomep2,DatenP2.svy),
+svytotal(~nationalincomep2,subset(DatenP2.svy, nationalincomep2>=as.numeric(svyquantile(~nationalincomep2,DatenP2.svy,quantile=c(0.9)))))/svytotal(~nationalincomep2,DatenP2.svy),
+svytotal(~postaxincomep2,subset(DatenP2.svy, postaxincomep2>=as.numeric(svyquantile(~postaxincomep2,DatenP2.svy,quantile=c(0.9)))))/svytotal(~postaxincomep2,DatenP2.svy))
+
+#Erstellung Tabelle
+T2008P2 <- data.frame(MeanIncomeP2, MedianIncomeP2, GiniP2, P8020P2, Top10ShareP2)
+colnames(T2008P2)<- c("Mean 2008", "Median 2008", "Gini 2008", "P80/20 2008", "Top 10% Share 2008")
+```
+
+```{r Ungleichheitsindikatoren nach P1, include=FALSE}
+
+#Definition Jahr; 
+year <- 2009
+
+#Erstellung des Survey Designs 
+DatenP1.svy <- svydesign(ids=~id_h,
+                       strata=~db040,
+                       weights=~db090,
+                       data=(DatenP1 %>% filter(pb010==year))) %>% convey_prep()
+
+# Mittelwert von Factor, National und Post Tax Disposable Income 
+MeanIncomeP1 <- c(
+  svymean(~factorincomep1,DatenP1.svy),
+  svymean(~nationalincomep1,DatenP1.svy),
+  svymean(~postaxincomep1,DatenP1.svy))
+
+# Median von Factor, National und Post Tax Disposable Income
+MedianIncomeP1 <- c(
+  svyquantile(~factorincomep1,DatenP1.svy,quantile=c(0.5)),
+  svyquantile(~nationalincomep1,DatenP1.svy,quantile=c(0.5)),
+  svyquantile(~postaxincomep1,DatenP1.svy,quantile=c(0.5)))
+
+# Gini von Factor, Natonal und Post Tax Disposable Income
+GiniP1 <- c(
+  svygini(~factorincomep1, DatenP1.svy),
+  svygini(~nationalincomep1, DatenP1.svy),
+  svygini(~postaxincomep1, DatenP1.svy))
+
+# P80/P20 von Factor, National und Post Tax Disposable Income
+P8020P1 <- c(
+  svyqsr(~factorincomep1,DatenP1.svy),
+  svyqsr(~nationalincomep1,DatenP1.svy),
+  svyqsr(~postaxincomep1,DatenP1.svy))
+
+# Top 10% Anteil von Factor, National und Post Tax Disposable Income
+Top10ShareP1 <- c(
+svytotal(~factorincomep1,subset(DatenP1.svy, factorincomep1>=as.numeric(svyquantile(~factorincomep1,DatenP1.svy,quantile=c(0.9)))))/svytotal(~factorincomep1,DatenP1.svy),
+svytotal(~nationalincomep1,subset(DatenP1.svy, nationalincomep1>=as.numeric(svyquantile(~nationalincomep1,DatenP1.svy,quantile=c(0.9)))))/svytotal(~nationalincomep1,DatenP1.svy),
+svytotal(~postaxincomep1,subset(DatenP1.svy, postaxincomep1>=as.numeric(svyquantile(~postaxincomep1,DatenP1.svy,quantile=c(0.9)))))/svytotal(~postaxincomep1,DatenP1.svy))
+
+#Erstellung Tabelle
+T2009P1 <- data.frame(MeanIncomeP1, MedianIncomeP1, GiniP1, P8020P1, Top10ShareP1)
+colnames(T2009P1)<- c("Mean 2009", "Median 2009", "Gini 2009", "P80/20 2009", "Top 10% Share 2009")
+```
+
+
+```{r Ungleichheitsindikatoren nach P2, include=FALSE}
+
+#Definition Jahr; 
+year <- 2009
+
+#Erstellung des Survey Designs 
+DatenP2.svy <- svydesign(ids=~id_h,
+                       strata=~db040,
+                       weights=~db090,
+                       data=(DatenP2 %>% filter(pb010==year))) %>% convey_prep()
+
+# Mittelwert von Factor, National und Post Tax Disposable Income 
+MeanIncomeP2 <- c(
+  svymean(~factorincomep2,DatenP2.svy),
+  svymean(~nationalincomep2,DatenP2.svy),
+  svymean(~postaxincomep2,DatenP2.svy))
+
+# Median von Factor, National und Post Tax Disposable Income
+MedianIncomeP2 <- c(
+  svyquantile(~factorincomep2,DatenP2.svy,quantile=c(0.5)),
+  svyquantile(~nationalincomep2,DatenP2.svy,quantile=c(0.5)),
+  svyquantile(~postaxincomep2,DatenP2.svy,quantile=c(0.5)))
+
+# Gini von Factor, Natonal und Post Tax Disposable Income
+GiniP2 <- c(
+  svygini(~factorincomep2, DatenP2.svy),
+  svygini(~nationalincomep2, DatenP2.svy),
+  svygini(~postaxincomep2, DatenP2.svy))
+
+# P80/P20 von Factor, National und Post Tax Disposable Income
+P8020P2 <- c(
+  svyqsr(~factorincomep2,DatenP2.svy),
+  svyqsr(~nationalincomep2,DatenP2.svy),
+  svyqsr(~postaxincomep2,DatenP2.svy))
+
+# Top 10% Anteil von Factor, National und Post Tax Disposable Income
+Top10ShareP2 <- c(
+svytotal(~factorincomep2,subset(DatenP2.svy, factorincomep2>=as.numeric(svyquantile(~factorincomep2,DatenP2.svy,quantile=c(0.9)))))/svytotal(~factorincomep2,DatenP2.svy),
+svytotal(~nationalincomep2,subset(DatenP2.svy, nationalincomep2>=as.numeric(svyquantile(~nationalincomep2,DatenP2.svy,quantile=c(0.9)))))/svytotal(~nationalincomep2,DatenP2.svy),
+svytotal(~postaxincomep2,subset(DatenP2.svy, postaxincomep2>=as.numeric(svyquantile(~postaxincomep2,DatenP2.svy,quantile=c(0.9)))))/svytotal(~postaxincomep2,DatenP2.svy))
+
+#Erstellung Tabelle
+T2009P2 <- data.frame(MeanIncomeP2, MedianIncomeP2, GiniP2, P8020P2, Top10ShareP2)
+colnames(T2009P2)<- c("Mean 2009", "Median 2009", "Gini 2009", "P80/20 2009", "Top 10% Share 2009")
+```
+
+```{r Ungleichheitsindikatoren nach P1, include=FALSE}
+
+#Definition Jahr; 
+year <- 2010
+
+#Erstellung des Survey Designs 
+DatenP1.svy <- svydesign(ids=~id_h,
+                       strata=~db040,
+                       weights=~db090,
+                       data=(DatenP1 %>% filter(pb010==year))) %>% convey_prep()
+
+# Mittelwert von Factor, National und Post Tax Disposable Income 
+MeanIncomeP1 <- c(
+  svymean(~factorincomep1,DatenP1.svy),
+  svymean(~nationalincomep1,DatenP1.svy),
+  svymean(~postaxincomep1,DatenP1.svy))
+
+# Median von Factor, National und Post Tax Disposable Income
+MedianIncomeP1 <- c(
+  svyquantile(~factorincomep1,DatenP1.svy,quantile=c(0.5)),
+  svyquantile(~nationalincomep1,DatenP1.svy,quantile=c(0.5)),
+  svyquantile(~postaxincomep1,DatenP1.svy,quantile=c(0.5)))
+
+# Gini von Factor, Natonal und Post Tax Disposable Income
+GiniP1 <- c(
+  svygini(~factorincomep1, DatenP1.svy),
+  svygini(~nationalincomep1, DatenP1.svy),
+  svygini(~postaxincomep1, DatenP1.svy))
+
+# P80/P20 von Factor, National und Post Tax Disposable Income
+P8020P1 <- c(
+  svyqsr(~factorincomep1,DatenP1.svy),
+  svyqsr(~nationalincomep1,DatenP1.svy),
+  svyqsr(~postaxincomep1,DatenP1.svy))
+
+# Top 10% Anteil von Factor, National und Post Tax Disposable Income
+Top10ShareP1 <- c(
+svytotal(~factorincomep1,subset(DatenP1.svy, factorincomep1>=as.numeric(svyquantile(~factorincomep1,DatenP1.svy,quantile=c(0.9)))))/svytotal(~factorincomep1,DatenP1.svy),
+svytotal(~nationalincomep1,subset(DatenP1.svy, nationalincomep1>=as.numeric(svyquantile(~nationalincomep1,DatenP1.svy,quantile=c(0.9)))))/svytotal(~nationalincomep1,DatenP1.svy),
+svytotal(~postaxincomep1,subset(DatenP1.svy, postaxincomep1>=as.numeric(svyquantile(~postaxincomep1,DatenP1.svy,quantile=c(0.9)))))/svytotal(~postaxincomep1,DatenP1.svy))
+
+#Erstellung Tabelle
+T2010P1 <- data.frame(MeanIncomeP1, MedianIncomeP1, GiniP1, P8020P1, Top10ShareP1)
+colnames(T2010P1)<- c("Mean 2010", "Median 2010", "Gini 2010", "P80/20 2010", "Top 10% Share 2010")
+```
+
+
+```{r Ungleichheitsindikatoren nach P2, include=FALSE}
+
+#Definition Jahr; 
+year <- 2010
+
+#Erstellung des Survey Designs 
+DatenP2.svy <- svydesign(ids=~id_h,
+                       strata=~db040,
+                       weights=~db090,
+                       data=(DatenP2 %>% filter(pb010==year))) %>% convey_prep()
+
+# Mittelwert von Factor, National und Post Tax Disposable Income 
+MeanIncomeP2 <- c(
+  svymean(~factorincomep2,DatenP2.svy),
+  svymean(~nationalincomep2,DatenP2.svy),
+  svymean(~postaxincomep2,DatenP2.svy))
+
+# Median von Factor, National und Post Tax Disposable Income
+MedianIncomeP2 <- c(
+  svyquantile(~factorincomep2,DatenP2.svy,quantile=c(0.5)),
+  svyquantile(~nationalincomep2,DatenP2.svy,quantile=c(0.5)),
+  svyquantile(~postaxincomep2,DatenP2.svy,quantile=c(0.5)))
+
+# Gini von Factor, Natonal und Post Tax Disposable Income
+GiniP2 <- c(
+  svygini(~factorincomep2, DatenP2.svy),
+  svygini(~nationalincomep2, DatenP2.svy),
+  svygini(~postaxincomep2, DatenP2.svy))
+
+# P80/P20 von Factor, National und Post Tax Disposable Income
+P8020P2 <- c(
+  svyqsr(~factorincomep2,DatenP2.svy),
+  svyqsr(~nationalincomep2,DatenP2.svy),
+  svyqsr(~postaxincomep2,DatenP2.svy))
+
+# Top 10% Anteil von Factor, National und Post Tax Disposable Income
+Top10ShareP2 <- c(
+svytotal(~factorincomep2,subset(DatenP2.svy, factorincomep2>=as.numeric(svyquantile(~factorincomep2,DatenP2.svy,quantile=c(0.9)))))/svytotal(~factorincomep2,DatenP2.svy),
+svytotal(~nationalincomep2,subset(DatenP2.svy, nationalincomep2>=as.numeric(svyquantile(~nationalincomep2,DatenP2.svy,quantile=c(0.9)))))/svytotal(~nationalincomep2,DatenP2.svy),
+svytotal(~postaxincomep2,subset(DatenP2.svy, postaxincomep2>=as.numeric(svyquantile(~postaxincomep2,DatenP2.svy,quantile=c(0.9)))))/svytotal(~postaxincomep2,DatenP2.svy))
+
+#Erstellung Tabelle
+T2010P2 <- data.frame(MeanIncomeP2, MedianIncomeP2, GiniP2, P8020P2, Top10ShareP2)
+colnames(T2010P2)<- c("Mean 2010", "Median 2010", "Gini 2010", "P80/20 2010", "Top 10% Share 2010")
+```
+
+
+```{r Ungleichheitsindikatoren nach P1, include=FALSE}
+
+#Definition Jahr; 
+year <- 2011
+
+#Erstellung des Survey Designs 
+DatenP1.svy <- svydesign(ids=~id_h,
+                       strata=~db040,
+                       weights=~db090,
+                       data=(DatenP1 %>% filter(pb010==year))) %>% convey_prep()
+
+# Mittelwert von Factor, National und Post Tax Disposable Income 
+MeanIncomeP1 <- c(
+  svymean(~factorincomep1,DatenP1.svy),
+  svymean(~nationalincomep1,DatenP1.svy),
+  svymean(~postaxincomep1,DatenP1.svy))
+
+# Median von Factor, National und Post Tax Disposable Income
+MedianIncomeP1 <- c(
+  svyquantile(~factorincomep1,DatenP1.svy,quantile=c(0.5)),
+  svyquantile(~nationalincomep1,DatenP1.svy,quantile=c(0.5)),
+  svyquantile(~postaxincomep1,DatenP1.svy,quantile=c(0.5)))
+
+# Gini von Factor, Natonal und Post Tax Disposable Income
+GiniP1 <- c(
+  svygini(~factorincomep1, DatenP1.svy),
+  svygini(~nationalincomep1, DatenP1.svy),
+  svygini(~postaxincomep1, DatenP1.svy))
+
+# P80/P20 von Factor, National und Post Tax Disposable Income
+P8020P1 <- c(
+  svyqsr(~factorincomep1,DatenP1.svy),
+  svyqsr(~nationalincomep1,DatenP1.svy),
+  svyqsr(~postaxincomep1,DatenP1.svy))
+
+# Top 10% Anteil von Factor, National und Post Tax Disposable Income
+Top10ShareP1 <- c(
+svytotal(~factorincomep1,subset(DatenP1.svy, factorincomep1>=as.numeric(svyquantile(~factorincomep1,DatenP1.svy,quantile=c(0.9)))))/svytotal(~factorincomep1,DatenP1.svy),
+svytotal(~nationalincomep1,subset(DatenP1.svy, nationalincomep1>=as.numeric(svyquantile(~nationalincomep1,DatenP1.svy,quantile=c(0.9)))))/svytotal(~nationalincomep1,DatenP1.svy),
+svytotal(~postaxincomep1,subset(DatenP1.svy, postaxincomep1>=as.numeric(svyquantile(~postaxincomep1,DatenP1.svy,quantile=c(0.9)))))/svytotal(~postaxincomep1,DatenP1.svy))
+
+#Erstellung Tabelle
+T2011P1 <- data.frame(MeanIncomeP1, MedianIncomeP1, GiniP1, P8020P1, Top10ShareP1)
+colnames(T2011P1)<- c("Mean 2011", "Median 2011", "Gini 2011", "P80/20 2011", "Top 10% Share 2011")
+```
+
+
+```{r Ungleichheitsindikatoren nach P2, include=FALSE}
+
+#Definition Jahr; 
+year <- 2011
+
+#Erstellung des Survey Designs 
+DatenP2.svy <- svydesign(ids=~id_h,
+                       strata=~db040,
+                       weights=~db090,
+                       data=(DatenP2 %>% filter(pb010==year))) %>% convey_prep()
+
+# Mittelwert von Factor, National und Post Tax Disposable Income 
+MeanIncomeP2 <- c(
+  svymean(~factorincomep2,DatenP2.svy),
+  svymean(~nationalincomep2,DatenP2.svy),
+  svymean(~postaxincomep2,DatenP2.svy))
+
+# Median von Factor, National und Post Tax Disposable Income
+MedianIncomeP2 <- c(
+  svyquantile(~factorincomep2,DatenP2.svy,quantile=c(0.5)),
+  svyquantile(~nationalincomep2,DatenP2.svy,quantile=c(0.5)),
+  svyquantile(~postaxincomep2,DatenP2.svy,quantile=c(0.5)))
+
+# Gini von Factor, Natonal und Post Tax Disposable Income
+GiniP2 <- c(
+  svygini(~factorincomep2, DatenP2.svy),
+  svygini(~nationalincomep2, DatenP2.svy),
+  svygini(~postaxincomep2, DatenP2.svy))
+
+# P80/P20 von Factor, National und Post Tax Disposable Income
+P8020P2 <- c(
+  svyqsr(~factorincomep2,DatenP2.svy),
+  svyqsr(~nationalincomep2,DatenP2.svy),
+  svyqsr(~postaxincomep2,DatenP2.svy))
+
+# Top 10% Anteil von Factor, National und Post Tax Disposable Income
+Top10ShareP2 <- c(
+svytotal(~factorincomep2,subset(DatenP2.svy, factorincomep2>=as.numeric(svyquantile(~factorincomep2,DatenP2.svy,quantile=c(0.9)))))/svytotal(~factorincomep2,DatenP2.svy),
+svytotal(~nationalincomep2,subset(DatenP2.svy, nationalincomep2>=as.numeric(svyquantile(~nationalincomep2,DatenP2.svy,quantile=c(0.9)))))/svytotal(~nationalincomep2,DatenP2.svy),
+svytotal(~postaxincomep2,subset(DatenP2.svy, postaxincomep2>=as.numeric(svyquantile(~postaxincomep2,DatenP2.svy,quantile=c(0.9)))))/svytotal(~postaxincomep2,DatenP2.svy))
+
+#Erstellung Tabelle
+T2011P2 <- data.frame(MeanIncomeP2, MedianIncomeP2, GiniP2, P8020P2, Top10ShareP2)
+colnames(T2011P2)<- c("Mean 2011", "Median 2011", "Gini 2011", "P80/20 2011", "Top 10% Share 2011")
+```
+
+```{r Ungleichheitsindikatoren nach P1, include=FALSE}
+
+#Definition Jahr; 
+year <- 2012
+
+#Erstellung des Survey Designs 
+DatenP1.svy <- svydesign(ids=~id_h,
+                       strata=~db040,
+                       weights=~db090,
+                       data=(DatenP1 %>% filter(pb010==year))) %>% convey_prep()
+
+# Mittelwert von Factor, National und Post Tax Disposable Income 
+MeanIncomeP1 <- c(
+  svymean(~factorincomep1,DatenP1.svy),
+  svymean(~nationalincomep1,DatenP1.svy),
+  svymean(~postaxincomep1,DatenP1.svy))
+
+# Median von Factor, National und Post Tax Disposable Income
+MedianIncomeP1 <- c(
+  svyquantile(~factorincomep1,DatenP1.svy,quantile=c(0.5)),
+  svyquantile(~nationalincomep1,DatenP1.svy,quantile=c(0.5)),
+  svyquantile(~postaxincomep1,DatenP1.svy,quantile=c(0.5)))
+
+# Gini von Factor, Natonal und Post Tax Disposable Income
+GiniP1 <- c(
+  svygini(~factorincomep1, DatenP1.svy),
+  svygini(~nationalincomep1, DatenP1.svy),
+  svygini(~postaxincomep1, DatenP1.svy))
+
+# P80/P20 von Factor, National und Post Tax Disposable Income
+P8020P1 <- c(
+  svyqsr(~factorincomep1,DatenP1.svy),
+  svyqsr(~nationalincomep1,DatenP1.svy),
+  svyqsr(~postaxincomep1,DatenP1.svy))
+
+# Top 10% Anteil von Factor, National und Post Tax Disposable Income
+Top10ShareP1 <- c(
+svytotal(~factorincomep1,subset(DatenP1.svy, factorincomep1>=as.numeric(svyquantile(~factorincomep1,DatenP1.svy,quantile=c(0.9)))))/svytotal(~factorincomep1,DatenP1.svy),
+svytotal(~nationalincomep1,subset(DatenP1.svy, nationalincomep1>=as.numeric(svyquantile(~nationalincomep1,DatenP1.svy,quantile=c(0.9)))))/svytotal(~nationalincomep1,DatenP1.svy),
+svytotal(~postaxincomep1,subset(DatenP1.svy, postaxincomep1>=as.numeric(svyquantile(~postaxincomep1,DatenP1.svy,quantile=c(0.9)))))/svytotal(~postaxincomep1,DatenP1.svy))
+
+#Erstellung Tabelle
+T2012P1 <- data.frame(MeanIncomeP1, MedianIncomeP1, GiniP1, P8020P1, Top10ShareP1)
+colnames(T2012P1)<- c("Mean 2012", "Median 2012", "Gini 2012", "P80/20 2012", "Top 10% Share 2012")
+```
+
+
+```{r Ungleichheitsindikatoren nach P2, include=FALSE}
+
+#Definition Jahr; 
+year <- 2012
+
+#Erstellung des Survey Designs 
+DatenP2.svy <- svydesign(ids=~id_h,
+                       strata=~db040,
+                       weights=~db090,
+                       data=(DatenP2 %>% filter(pb010==year))) %>% convey_prep()
+
+# Mittelwert von Factor, National und Post Tax Disposable Income 
+MeanIncomeP2 <- c(
+  svymean(~factorincomep2,DatenP2.svy),
+  svymean(~nationalincomep2,DatenP2.svy),
+  svymean(~postaxincomep2,DatenP2.svy))
+
+# Median von Factor, National und Post Tax Disposable Income
+MedianIncomeP2 <- c(
+  svyquantile(~factorincomep2,DatenP2.svy,quantile=c(0.5)),
+  svyquantile(~nationalincomep2,DatenP2.svy,quantile=c(0.5)),
+  svyquantile(~postaxincomep2,DatenP2.svy,quantile=c(0.5)))
+
+# Gini von Factor, Natonal und Post Tax Disposable Income
+GiniP2 <- c(
+  svygini(~factorincomep2, DatenP2.svy),
+  svygini(~nationalincomep2, DatenP2.svy),
+  svygini(~postaxincomep2, DatenP2.svy))
+
+# P80/P20 von Factor, National und Post Tax Disposable Income
+P8020P2 <- c(
+  svyqsr(~factorincomep2,DatenP2.svy),
+  svyqsr(~nationalincomep2,DatenP2.svy),
+  svyqsr(~postaxincomep2,DatenP2.svy))
+
+# Top 10% Anteil von Factor, National und Post Tax Disposable Income
+Top10ShareP2 <- c(
+svytotal(~factorincomep2,subset(DatenP2.svy, factorincomep2>=as.numeric(svyquantile(~factorincomep2,DatenP2.svy,quantile=c(0.9)))))/svytotal(~factorincomep2,DatenP2.svy),
+svytotal(~nationalincomep2,subset(DatenP2.svy, nationalincomep2>=as.numeric(svyquantile(~nationalincomep2,DatenP2.svy,quantile=c(0.9)))))/svytotal(~nationalincomep2,DatenP2.svy),
+svytotal(~postaxincomep2,subset(DatenP2.svy, postaxincomep2>=as.numeric(svyquantile(~postaxincomep2,DatenP2.svy,quantile=c(0.9)))))/svytotal(~postaxincomep2,DatenP2.svy))
+
+#Erstellung Tabelle
+T2012P2 <- data.frame(MeanIncomeP2, MedianIncomeP2, GiniP2, P8020P2, Top10ShareP2)
+colnames(T2012P2)<- c("Mean 2012", "Median 2012", "Gini 2012", "P80/20 2012", "Top 10% Share 2012")
+```
+
+```{r Ungleichheitsindikatoren nach P1, include=FALSE}
+
+#Definition Jahr; 
+year <- 2013
+
+#Erstellung des Survey Designs 
+DatenP1.svy <- svydesign(ids=~id_h,
+                       strata=~db040,
+                       weights=~db090,
+                       data=(DatenP1 %>% filter(pb010==year))) %>% convey_prep()
+
+# Mittelwert von Factor, National und Post Tax Disposable Income 
+MeanIncomeP1 <- c(
+  svymean(~factorincomep1,DatenP1.svy),
+  svymean(~nationalincomep1,DatenP1.svy),
+  svymean(~postaxincomep1,DatenP1.svy))
+
+# Median von Factor, National und Post Tax Disposable Income
+MedianIncomeP1 <- c(
+  svyquantile(~factorincomep1,DatenP1.svy,quantile=c(0.5)),
+  svyquantile(~nationalincomep1,DatenP1.svy,quantile=c(0.5)),
+  svyquantile(~postaxincomep1,DatenP1.svy,quantile=c(0.5)))
+
+# Gini von Factor, Natonal und Post Tax Disposable Income
+GiniP1 <- c(
+  svygini(~factorincomep1, DatenP1.svy),
+  svygini(~nationalincomep1, DatenP1.svy),
+  svygini(~postaxincomep1, DatenP1.svy))
+
+# P80/P20 von Factor, National und Post Tax Disposable Income
+P8020P1 <- c(
+  svyqsr(~factorincomep1,DatenP1.svy),
+  svyqsr(~nationalincomep1,DatenP1.svy),
+  svyqsr(~postaxincomep1,DatenP1.svy))
+
+# Top 10% Anteil von Factor, National und Post Tax Disposable Income
+Top10ShareP1 <- c(
+svytotal(~factorincomep1,subset(DatenP1.svy, factorincomep1>=as.numeric(svyquantile(~factorincomep1,DatenP1.svy,quantile=c(0.9)))))/svytotal(~factorincomep1,DatenP1.svy),
+svytotal(~nationalincomep1,subset(DatenP1.svy, nationalincomep1>=as.numeric(svyquantile(~nationalincomep1,DatenP1.svy,quantile=c(0.9)))))/svytotal(~nationalincomep1,DatenP1.svy),
+svytotal(~postaxincomep1,subset(DatenP1.svy, postaxincomep1>=as.numeric(svyquantile(~postaxincomep1,DatenP1.svy,quantile=c(0.9)))))/svytotal(~postaxincomep1,DatenP1.svy))
+
+#Erstellung Tabelle
+T2013P1 <- data.frame(MeanIncomeP1, MedianIncomeP1, GiniP1, P8020P1, Top10ShareP1)
+colnames(T2013P1)<- c("Mean 2013", "Median 2013", "Gini 2013", "P80/20 2013", "Top 10% Share 2013")
+```
+
+
+```{r Ungleichheitsindikatoren nach P2, include=FALSE}
+
+#Definition Jahr; 
+year <- 2013
+
+#Erstellung des Survey Designs 
+DatenP2.svy <- svydesign(ids=~id_h,
+                       strata=~db040,
+                       weights=~db090,
+                       data=(DatenP2 %>% filter(pb010==year))) %>% convey_prep()
+
+# Mittelwert von Factor, National und Post Tax Disposable Income 
+MeanIncomeP2 <- c(
+  svymean(~factorincomep2,DatenP2.svy),
+  svymean(~nationalincomep2,DatenP2.svy),
+  svymean(~postaxincomep2,DatenP2.svy))
+
+# Median von Factor, National und Post Tax Disposable Income
+MedianIncomeP2 <- c(
+  svyquantile(~factorincomep2,DatenP2.svy,quantile=c(0.5)),
+  svyquantile(~nationalincomep2,DatenP2.svy,quantile=c(0.5)),
+  svyquantile(~postaxincomep2,DatenP2.svy,quantile=c(0.5)))
+
+# Gini von Factor, Natonal und Post Tax Disposable Income
+GiniP2 <- c(
+  svygini(~factorincomep2, DatenP2.svy),
+  svygini(~nationalincomep2, DatenP2.svy),
+  svygini(~postaxincomep2, DatenP2.svy))
+
+# P80/P20 von Factor, National und Post Tax Disposable Income
+P8020P2 <- c(
+  svyqsr(~factorincomep2,DatenP2.svy),
+  svyqsr(~nationalincomep2,DatenP2.svy),
+  svyqsr(~postaxincomep2,DatenP2.svy))
+
+# Top 10% Anteil von Factor, National und Post Tax Disposable Income
+Top10ShareP2 <- c(
+svytotal(~factorincomep2,subset(DatenP2.svy, factorincomep2>=as.numeric(svyquantile(~factorincomep2,DatenP2.svy,quantile=c(0.9)))))/svytotal(~factorincomep2,DatenP2.svy),
+svytotal(~nationalincomep2,subset(DatenP2.svy, nationalincomep2>=as.numeric(svyquantile(~nationalincomep2,DatenP2.svy,quantile=c(0.9)))))/svytotal(~nationalincomep2,DatenP2.svy),
+svytotal(~postaxincomep2,subset(DatenP2.svy, postaxincomep2>=as.numeric(svyquantile(~postaxincomep2,DatenP2.svy,quantile=c(0.9)))))/svytotal(~postaxincomep2,DatenP2.svy))
+
+#Erstellung Tabelle
+T2013P2 <- data.frame(MeanIncomeP2, MedianIncomeP2, GiniP2, P8020P2, Top10ShareP2)
+colnames(T2013P2)<- c("Mean 2013", "Median 2013", "Gini 2013", "P80/20 2013", "Top 10% Share 2013")
+```
+
+```{r Ungleichheitsindikatoren nach P1, include=FALSE}
+
+#Definition Jahr; 
+year <- 2014
+
+#Erstellung des Survey Designs 
+DatenP1.svy <- svydesign(ids=~id_h,
+                       strata=~db040,
+                       weights=~db090,
+                       data=(DatenP1 %>% filter(pb010==year))) %>% convey_prep()
+
+# Mittelwert von Factor, National und Post Tax Disposable Income 
+MeanIncomeP1 <- c(
+  svymean(~factorincomep1,DatenP1.svy),
+  svymean(~nationalincomep1,DatenP1.svy),
+  svymean(~postaxincomep1,DatenP1.svy))
+
+# Median von Factor, National und Post Tax Disposable Income
+MedianIncomeP1 <- c(
+  svyquantile(~factorincomep1,DatenP1.svy,quantile=c(0.5)),
+  svyquantile(~nationalincomep1,DatenP1.svy,quantile=c(0.5)),
+  svyquantile(~postaxincomep1,DatenP1.svy,quantile=c(0.5)))
+
+# Gini von Factor, Natonal und Post Tax Disposable Income
+GiniP1 <- c(
+  svygini(~factorincomep1, DatenP1.svy),
+  svygini(~nationalincomep1, DatenP1.svy),
+  svygini(~postaxincomep1, DatenP1.svy))
+
+# P80/P20 von Factor, National und Post Tax Disposable Income
+P8020P1 <- c(
+  svyqsr(~factorincomep1,DatenP1.svy),
+  svyqsr(~nationalincomep1,DatenP1.svy),
+  svyqsr(~postaxincomep1,DatenP1.svy))
+
+# Top 10% Anteil von Factor, National und Post Tax Disposable Income
+Top10ShareP1 <- c(
+svytotal(~factorincomep1,subset(DatenP1.svy, factorincomep1>=as.numeric(svyquantile(~factorincomep1,DatenP1.svy,quantile=c(0.9)))))/svytotal(~factorincomep1,DatenP1.svy),
+svytotal(~nationalincomep1,subset(DatenP1.svy, nationalincomep1>=as.numeric(svyquantile(~nationalincomep1,DatenP1.svy,quantile=c(0.9)))))/svytotal(~nationalincomep1,DatenP1.svy),
+svytotal(~postaxincomep1,subset(DatenP1.svy, postaxincomep1>=as.numeric(svyquantile(~postaxincomep1,DatenP1.svy,quantile=c(0.9)))))/svytotal(~postaxincomep1,DatenP1.svy))
+
+#Erstellung Tabelle
+T2014P1 <- data.frame(MeanIncomeP1, MedianIncomeP1, GiniP1, P8020P1, Top10ShareP1)
+colnames(T2014P1)<- c("Mean 2014", "Median 2014", "Gini 2014", "P80/20 2014", "Top 10% Share 2014")
+```
+
+
+```{r Ungleichheitsindikatoren nach P2, include=FALSE}
+
+#Definition Jahr; 
+year <- 2014
+
+#Erstellung des Survey Designs 
+DatenP2.svy <- svydesign(ids=~id_h,
+                       strata=~db040,
+                       weights=~db090,
+                       data=(DatenP2 %>% filter(pb010==year))) %>% convey_prep()
+
+# Mittelwert von Factor, National und Post Tax Disposable Income 
+MeanIncomeP2 <- c(
+  svymean(~factorincomep2,DatenP2.svy),
+  svymean(~nationalincomep2,DatenP2.svy),
+  svymean(~postaxincomep2,DatenP2.svy))
+
+# Median von Factor, National und Post Tax Disposable Income
+MedianIncomeP2 <- c(
+  svyquantile(~factorincomep2,DatenP2.svy,quantile=c(0.5)),
+  svyquantile(~nationalincomep2,DatenP2.svy,quantile=c(0.5)),
+  svyquantile(~postaxincomep2,DatenP2.svy,quantile=c(0.5)))
+
+# Gini von Factor, Natonal und Post Tax Disposable Income
+GiniP2 <- c(
+  svygini(~factorincomep2, DatenP2.svy),
+  svygini(~nationalincomep2, DatenP2.svy),
+  svygini(~postaxincomep2, DatenP2.svy))
+
+# P80/P20 von Factor, National und Post Tax Disposable Income
+P8020P2 <- c(
+  svyqsr(~factorincomep2,DatenP2.svy),
+  svyqsr(~nationalincomep2,DatenP2.svy),
+  svyqsr(~postaxincomep2,DatenP2.svy))
+
+# Top 10% Anteil von Factor, National und Post Tax Disposable Income
+Top10ShareP2 <- c(
+svytotal(~factorincomep2,subset(DatenP2.svy, factorincomep2>=as.numeric(svyquantile(~factorincomep2,DatenP2.svy,quantile=c(0.9)))))/svytotal(~factorincomep2,DatenP2.svy),
+svytotal(~nationalincomep2,subset(DatenP2.svy, nationalincomep2>=as.numeric(svyquantile(~nationalincomep2,DatenP2.svy,quantile=c(0.9)))))/svytotal(~nationalincomep2,DatenP2.svy),
+svytotal(~postaxincomep2,subset(DatenP2.svy, postaxincomep2>=as.numeric(svyquantile(~postaxincomep2,DatenP2.svy,quantile=c(0.9)))))/svytotal(~postaxincomep2,DatenP2.svy))
+
+#Erstellung Tabelle
+T2014P2 <- data.frame(MeanIncomeP2, MedianIncomeP2, GiniP2, P8020P2, Top10ShareP2)
+colnames(T2014P2)<- c("Mean 2014", "Median 2014", "Gini 2014", "P80/20 2014", "Top 10% Share 2014")
+```
+
+```{r Ungleichheitsindikatoren nach P1, include=FALSE}
+#Definition Jahr; 
+year <- 2015
+#Erstellung des Survey Designs 
+DatenP1.svy <- svydesign(ids=~id_h,
+                       strata=~db040,
+                       weights=~db090,
+                       data=(DatenP1 %>% filter(pb010==year))) %>% convey_prep()
+
+# Mittelwert von Factor, National und Post Tax Disposable Income 
+MeanIncomeP1 <- c(
+  svymean(~factorincomep1,DatenP1.svy),
+  svymean(~nationalincomep1,DatenP1.svy),
+  svymean(~postaxincomep1,DatenP1.svy))
+
+# Median von Factor, National und Post Tax Disposable Income
+MedianIncomeP1 <- c(
+  svyquantile(~factorincomep1,DatenP1.svy,quantile=c(0.5)),
+  svyquantile(~nationalincomep1,DatenP1.svy,quantile=c(0.5)),
+  svyquantile(~postaxincomep1,DatenP1.svy,quantile=c(0.5)))
+
+# Gini von Factor, Natonal und Post Tax Disposable Income
+GiniP1 <- c(
+  svygini(~factorincomep1, DatenP1.svy),
+  svygini(~nationalincomep1, DatenP1.svy),
+  svygini(~postaxincomep1, DatenP1.svy))
+
+# P80/P20 von Factor, National und Post Tax Disposable Income
+P8020P1 <- c(
+  svyqsr(~factorincomep1,DatenP1.svy),
+  svyqsr(~nationalincomep1,DatenP1.svy),
+  svyqsr(~postaxincomep1,DatenP1.svy))
+
+# Top 10% Anteil von Factor, National und Post Tax Disposable Income
+Top10ShareP1 <- c(
+svytotal(~factorincomep1,subset(DatenP1.svy, factorincomep1>=as.numeric(svyquantile(~factorincomep1,DatenP1.svy,quantile=c(0.9)))))/svytotal(~factorincomep1,DatenP1.svy),
+svytotal(~nationalincomep1,subset(DatenP1.svy, nationalincomep1>=as.numeric(svyquantile(~nationalincomep1,DatenP1.svy,quantile=c(0.9)))))/svytotal(~nationalincomep1,DatenP1.svy),
+svytotal(~postaxincomep1,subset(DatenP1.svy, postaxincomep1>=as.numeric(svyquantile(~postaxincomep1,DatenP1.svy,quantile=c(0.9)))))/svytotal(~postaxincomep1,DatenP1.svy))
+
+#Erstellung Tabelle
+T2015P1 <- data.frame(MeanIncomeP1, MedianIncomeP1, GiniP1, P8020P1, Top10ShareP1)
+colnames(T2015P1)<- c("Mean 2015", "Median 2015", "Gini 2015", "P80/20 2015", "Top 10% Share 2015")
+```
+
+```{r Ungleichheitsindikatoren nach P2, include=FALSE}
+
+#Definition Jahr; 
+year <- 2015
+
+#Erstellung des Survey Designs 
+DatenP2.svy <- svydesign(ids=~id_h,
+                       strata=~db040,
+                       weights=~db090,
+                       data=(DatenP2 %>% filter(pb010==year))) %>% convey_prep()
+
+# Mittelwert von Factor, National und Post Tax Disposable Income 
+MeanIncomeP2 <- c(
+  svymean(~factorincomep2,DatenP2.svy),
+  svymean(~nationalincomep2,DatenP2.svy),
+  svymean(~postaxincomep2,DatenP2.svy))
+
+# Median von Factor, National und Post Tax Disposable Income
+MedianIncomeP2 <- c(
+  svyquantile(~factorincomep2,DatenP2.svy,quantile=c(0.5)),
+  svyquantile(~nationalincomep2,DatenP2.svy,quantile=c(0.5)),
+  svyquantile(~postaxincomep2,DatenP2.svy,quantile=c(0.5)))
+
+# Gini von Factor, Natonal und Post Tax Disposable Income
+GiniP2 <- c(
+  svygini(~factorincomep2, DatenP2.svy),
+  svygini(~nationalincomep2, DatenP2.svy),
+  svygini(~postaxincomep2, DatenP2.svy))
+
+# P80/P20 von Factor, National und Post Tax Disposable Income
+P8020P2 <- c(
+  svyqsr(~factorincomep2,DatenP2.svy),
+  svyqsr(~nationalincomep2,DatenP2.svy),
+  svyqsr(~postaxincomep2,DatenP2.svy))
+
+# Top 10% Anteil von Factor, National und Post Tax Disposable Income
+Top10ShareP2 <- c(
+svytotal(~factorincomep2,subset(DatenP2.svy, factorincomep2>=as.numeric(svyquantile(~factorincomep2,DatenP2.svy,quantile=c(0.9)))))/svytotal(~factorincomep2,DatenP2.svy),
+svytotal(~nationalincomep2,subset(DatenP2.svy, nationalincomep2>=as.numeric(svyquantile(~nationalincomep2,DatenP2.svy,quantile=c(0.9)))))/svytotal(~nationalincomep2,DatenP2.svy),
+svytotal(~postaxincomep2,subset(DatenP2.svy, postaxincomep2>=as.numeric(svyquantile(~postaxincomep2,DatenP2.svy,quantile=c(0.9)))))/svytotal(~postaxincomep2,DatenP2.svy))
+
+#Erstellung Tabelle
+T2015P2 <- data.frame(MeanIncomeP2, MedianIncomeP2, GiniP2, P8020P2, Top10ShareP2)
+colnames(T2015P2)<- c("Mean 2015", "Median 2015", "Gini 2015", "P80/20 2015", "Top 10% Share 2015")
+```
+
+```{r Ungleichheitsindikatoren nach P1, include=FALSE}
+
+#Definition Jahr; 
+year <- 2016
+
+#Erstellung des Survey Designs (in Zeile data=(silc.dprh %>% filter(pb010=XX) XX Für bestimmtes Jahr eintragen)
+DatenP1.svy <- svydesign(ids=~id_h,
+                       strata=~db040,
+                       weights=~db090,
+                       data=(DatenP1 %>% filter(pb010==year))) %>% convey_prep()
+
+# Mittelwert von Factor, National und Post Tax Disposable Income 
+MeanIncomeP1 <- c(
+  svymean(~factorincomep1,DatenP1.svy),
+  svymean(~nationalincomep1,DatenP1.svy),
+  svymean(~postaxincomep1,DatenP1.svy))
+
+# Median von Factor, National und Post Tax Disposable Income
+MedianIncomeP1 <- c(
+  svyquantile(~factorincomep1,DatenP1.svy,quantile=c(0.5)),
+  svyquantile(~nationalincomep1,DatenP1.svy,quantile=c(0.5)),
+  svyquantile(~postaxincomep1,DatenP1.svy,quantile=c(0.5)))
+
+# Gini von Factor, Natonal und Post Tax Disposable Income
+GiniP1 <- c(
+  svygini(~factorincomep1, DatenP1.svy),
+  svygini(~nationalincomep1, DatenP1.svy),
+  svygini(~postaxincomep1, DatenP1.svy))
+
+# P80/P20 von Factor, National und Post Tax Disposable Income
+P8020P1 <- c(
+  svyqsr(~factorincomep1,DatenP1.svy),
+  svyqsr(~nationalincomep1,DatenP1.svy),
+  svyqsr(~postaxincomep1,DatenP1.svy))
+
+# Top 10% Anteil von Factor, National und Post Tax Disposable Income
+Top10ShareP1 <- c(
+svytotal(~factorincomep1,subset(DatenP1.svy, factorincomep1>=as.numeric(svyquantile(~factorincomep1,DatenP1.svy,quantile=c(0.9)))))/svytotal(~factorincomep1,DatenP1.svy),
+svytotal(~nationalincomep1,subset(DatenP1.svy, nationalincomep1>=as.numeric(svyquantile(~nationalincomep1,DatenP1.svy,quantile=c(0.9)))))/svytotal(~nationalincomep1,DatenP1.svy),
+svytotal(~postaxincomep1,subset(DatenP1.svy, postaxincomep1>=as.numeric(svyquantile(~postaxincomep1,DatenP1.svy,quantile=c(0.9)))))/svytotal(~postaxincomep1,DatenP1.svy))
+
+#Erstellung Tabelle
+T2016P1 <- data.frame(MeanIncomeP1, MedianIncomeP1, GiniP1, P8020P1, Top10ShareP1)
+colnames(T2016P1)<- c("Mean 2016", "Median 2016", "Gini 2016", "P80/20 2016", "Top 10% Share 2016")
+
+```
+
+
+```{r Ungleichheitsindikatoren nach P2, include=FALSE}
+
+#Definition Jahr; 
+year <- 2016
+
+#Erstellung des Survey Designs 
+DatenP2.svy <- svydesign(ids=~id_h,
+                       strata=~db040,
+                       weights=~db090,
+                       data=(DatenP2 %>% filter(pb010==year))) %>% convey_prep()
+
+# Mittelwert von Factor, National und Post Tax Disposable Income 
+MeanIncomeP2 <- c(
+  svymean(~factorincomep2,DatenP2.svy),
+  svymean(~nationalincomep2,DatenP2.svy),
+  svymean(~postaxincomep2,DatenP2.svy))
+
+# Median von Factor, National und Post Tax Disposable Income
+MedianIncomeP2 <- c(
+  svyquantile(~factorincomep2,DatenP2.svy,quantile=c(0.5)),
+  svyquantile(~nationalincomep2,DatenP2.svy,quantile=c(0.5)),
+  svyquantile(~postaxincomep2,DatenP2.svy,quantile=c(0.5)))
+
+# Gini von Factor, Natonal und Post Tax Disposable Income
+GiniP2 <- c(
+  svygini(~factorincomep2, DatenP2.svy),
+  svygini(~nationalincomep2, DatenP2.svy),
+  svygini(~postaxincomep2, DatenP2.svy))
+
+# P80/P20 von Factor, National und Post Tax Disposable Income
+P8020P2 <- c(
+  svyqsr(~factorincomep2,DatenP2.svy),
+  svyqsr(~nationalincomep2,DatenP2.svy),
+  svyqsr(~postaxincomep2,DatenP2.svy))
+
+# Top 10% Anteil von Factor, National und Post Tax Disposable Income
+Top10ShareP2 <- c(
+svytotal(~factorincomep2,subset(DatenP2.svy, factorincomep2>=as.numeric(svyquantile(~factorincomep2,DatenP2.svy,quantile=c(0.9)))))/svytotal(~factorincomep2,DatenP2.svy),
+svytotal(~nationalincomep2,subset(DatenP2.svy, nationalincomep2>=as.numeric(svyquantile(~nationalincomep2,DatenP2.svy,quantile=c(0.9)))))/svytotal(~nationalincomep2,DatenP2.svy),
+svytotal(~postaxincomep2,subset(DatenP2.svy, postaxincomep2>=as.numeric(svyquantile(~postaxincomep2,DatenP2.svy,quantile=c(0.9)))))/svytotal(~postaxincomep2,DatenP2.svy))
+
+#Erstellung Tabelle
+T2016P2 <- data.frame(MeanIncomeP2, MedianIncomeP2, GiniP2, P8020P2, Top10ShareP2)
+colnames(T2016P2)<- c("Mean 2016", "Median 2016", "Gini 2016", "P80/20 2016", "Top 10% Share 2016")
+```
+
+
+#Tabelle über alle Zeitreihen
+```{r Tabellen P1, include=FALSE}
+MeanP1T <- data.frame(T2008P1$`Mean 2008`, T2009P1$`Mean 2009`, T2010P1$`Mean 2010`, T2011P1$`Mean 2011`, T2012P1$`Mean 2012`, T2013P1$`Mean 2013`, T2014P1$`Mean 2014`, T2015P1$`Mean 2015`, T2016P1$`Mean 2016`)
+colnames(MeanP1T) <- c(2008:2016)
+rownames(MeanP1T) <- c("Bruttofaktoreinkommen", "Bruttonationaleinkommen", "Verfügbares Nettoeinkommen")
+MedianP1T <- data.frame(T2008P1$`Median 2008`, T2009P1$`Median 2009`, T2010P1$`Median 2010`, T2011P1$`Median 2011`, T2012P1$`Median 2012`, T2013P1$`Median 2013`, T2014P1$`Median 2014`, T2015P1$`Median 2015`, T2016P1$`Median 2016`)
+colnames(MedianP1T) <- c(2008:2016)
+rownames(MedianP1T) <- c("Bruttofaktoreinkommen", "Bruttonationaleinkommen", "Verfügbares Nettoeinkommen")
+GiniP1T <- data.frame(T2008P1$`Gini 2008`, T2009P1$`Gini 2009`, T2010P1$`Gini 2010`, T2011P1$`Gini 2011`, T2012P1$`Gini 2012`, T2013P1$`Gini 2013`, T2014P1$`Gini 2014`, T2015P1$`Gini 2015`, T2016P1$`Gini 2016`)
+colnames(GiniP1T) <- c(2008:2016)
+rownames(GiniP1T) <- c("Bruttofaktoreinkommen", "Bruttonationaleinkommen", "Verfügbares Nettoeinkommen")
+P8020P1T <- data.frame(T2008P1$`P80/20 2008`, T2009P1$`P80/20 2009`, T2010P1$`P80/20 2010`, T2011P1$`P80/20 2011`, T2012P1$`P80/20 2012`, T2013P1$`P80/20 2013`, T2014P1$`P80/20 2014`, T2015P1$`P80/20 2015`, T2016P1$`P80/20 2016`)
+colnames(P8020P1T) <- c(2008:2016)
+rownames(P8020P1T) <- c("Bruttofaktoreinkommen", "Bruttonationaleinkommen", "Verfügbares Nettoeinkommen")
+T10SP1T <- data.frame(T2008P1$`Top 10% Share 2008`, T2009P1$`Top 10% Share 2009`, T2010P1$`Top 10% Share 2010`, T2011P1$`Top 10% Share 2011`, T2012P1$`Top 10% Share 2012`, T2013P1$`Top 10% Share 2013`, T2014P1$`Top 10% Share 2014`, T2015P1$`Top 10% Share 2015`, T2016P1$`Top 10% Share 2016`)
+colnames(T10SP1T) <- c(2008:2016)
+rownames(T10SP1T) <- c("Bruttofaktoreinkommen", "Bruttonationaleinkommen", "Verfügbares Nettoeinkommen")
+```
+
+```{r Tabellen P2, include=FALSE}
+MeanP2T <- data.frame(T2008P2$`Mean 2008`, T2009P2$`Mean 2009`, T2010P2$`Mean 2010`, T2011P2$`Mean 2011`, T2012P2$`Mean 2012`, T2013P2$`Mean 2013`, T2014P2$`Mean 2014`, T2015P2$`Mean 2015`, T2016P2$`Mean 2016`)
+colnames(MeanP2T) <- c(2008:2016)
+rownames(MeanP2T) <- c("Bruttofaktoreinkommen", "Bruttonationaleinkommen", "Verfügbares Nettoeinkommen")
+MedianP2T <- data.frame(T2008P2$`Median 2008`, T2009P2$`Median 2009`, T2010P2$`Median 2010`, T2011P2$`Median 2011`, T2012P2$`Median 2012`, T2013P2$`Median 2013`, T2014P2$`Median 2014`, T2015P2$`Median 2015`, T2016P2$`Median 2016`)
+colnames(MedianP2T) <- c(2008:2016)
+rownames(MedianP2T) <- c("Bruttofaktoreinkommen", "Bruttonationaleinkommen", "Verfügbares Nettoeinkommen")
+GiniP2T <- data.frame(T2008P2$`Gini 2008`, T2009P2$`Gini 2009`, T2010P2$`Gini 2010`, T2011P2$`Gini 2011`, T2012P2$`Gini 2012`, T2013P2$`Gini 2013`, T2014P2$`Gini 2014`, T2015P2$`Gini 2015`, T2016P2$`Gini 2016`)
+colnames(GiniP2T) <- c(2008:2016)
+rownames(GiniP2T) <- c("Bruttofaktoreinkommen", "Bruttonationaleinkommen", "Verfügbares Nettoeinkommen")
+P8020P2T <- data.frame(T2008P2$`P80/20 2008`, T2009P2$`P80/20 2009`, T2010P2$`P80/20 2010`, T2011P2$`P80/20 2011`, T2012P2$`P80/20 2012`, T2013P2$`P80/20 2013`, T2014P2$`P80/20 2014`, T2015P2$`P80/20 2015`, T2016P2$`P80/20 2016`)
+colnames(P8020P2T) <- c(2008:2016)
+rownames(P8020P2T) <- c("Bruttofaktoreinkommen", "Bruttonationaleinkommen", "Verfügbares Nettoeinkommen")
+T10SP2T <- data.frame(T2008P2$`Top 10% Share 2008`, T2009P2$`Top 10% Share 2009`, T2010P2$`Top 10% Share 2010`, T2011P2$`Top 10% Share 2011`, T2012P2$`Top 10% Share 2012`, T2013P2$`Top 10% Share 2013`, T2014P2$`Top 10% Share 2014`, T2015P2$`Top 10% Share 2015`, T2016P2$`Top 10% Share 2016`)
+colnames(T10SP2T) <- c(2008:2016)
+rownames(T10SP2T) <- c("Bruttofaktoreinkommen", "Bruttonationaleinkommen", "Verfügbares Nettoeinkommen")
+```
+
+#Grafiken über Zeitreihen
+```{r Mean Faktoreinkommen}
+years <-c (round(2008:2016), digits=0)
+MFIncP1 <- rbind(T2008P1[1,1], T2009P1[1,1], T2010P1[1,1], T2011P1[1,1], T2012P1[1,1], T2013P1[1,1], T2014P1[1,1], T2015P1[1,1], T2016P1[1,1])
+MFIncP1 <- cbind(years, MFIncP1)
+MFIncP1<-data.frame(MFIncP1)
+colnames(MFIncP1)<-c("years","factorincome" )
+plot(MFIncP1$years, MFIncP1$factorincome, xlab="Jahr", ylab="mittleres Bruttofaktoreinkommen")
+```
+```{r Mean Nationaleinkommen}
+MNIncP1 <- rbind(T2008P1[2,1], T2009P1[2,1], T2010P1[2,1], T2011P1[2,1], T2012P1[2,1], T2013P1[2,1], T2014P1[2,1], T2015P1[2,1], T2016P1[2,1])
+MNIncP1 <- cbind(years, MNIncP1)
+MNIncP1<-data.frame(MFIncP1)
+colnames(MNIncP1)<-c("years","nationalincome" )
+plot(MNIncP1$years, MNIncP1$nationalincome, xlab="Jahr", ylab="mittleres Bruttonationaleinkommen")
+```
+
+```{r Mean Verfügbares Einkommen}
+#Verfügbares Einkommen
+MVIncP1 <- rbind(T2008P1[3,1], T2009P1[3,1], T2010P1[3,1], T2011P1[3,1], T2012P1[3,1], T2013P1[3,1], T2014P1[3,1], T2015P1[3,1], T2016P1[3,1])
+MVIncP1 <- cbind(years, MVIncP1)
+MVIncP1<-data.frame(MVIncP1)
+colnames(MVIncP1)<-c("years","vfgbinc" )
+plot(MVIncP1$years, MVIncP1$vfgbinc, xlab="Jahr", ylab="mittleres verfügbares Nettoeinkommen")
+```
+
+```{r Median Faktoreinkommen}
+mFIncP1 <- rbind(T2008P1[1,2], T2009P1[1,2], T2010P1[1,2], T2011P1[1,2], T2012P1[1,2], T2013P1[1,2], T2014P1[1,2], T2015P1[1,2], T2016P1[1,2])
+mFIncP1 <- cbind(years, mFIncP1)
+mFIncP1<-data.frame(mFIncP1)
+colnames(mFIncP1)<-c("years","factorincome" )
+plot(mFIncP1$years, mFIncP1$factorincome, xlab="Jahr", ylab="Median Bruttofaktoreinkommen")
+```
+
+```{r Median Verfügbares Einkommen}
+#Verfügbares Einkommen
+mVIncP1 <- rbind(T2008P1[3,2], T2009P1[3,2], T2010P1[3,2], T2011P1[3,2], T2012P1[3,2], T2013P1[3,2], T2014P1[3,2], T2015P1[3,2], T2016P1[3,2])
+mVIncP1 <- cbind(years, mVIncP1)
+mVIncP1<-data.frame(mVIncP1)
+colnames(mVIncP1)<-c("years","vfgbinc" )
+plot(mVIncP1$years, mVIncP1$vfgbinc, xlab="Jahr", ylab="Median verfügbares Nettoeinkommen")
+```
+
+
+```{r Gini Faktor Einkommen}
+GFIncP1 <- rbind(T2008P1[1,3], T2009P1[1,3], T2010P1[1,3], T2011P1[1,3], T2012P1[1,3], T2013P1[1,3], T2014P1[1,3], T2015P1[1,3], T2016P1[1,3])
+GFIncP1 <- cbind(years, GFIncP1)
+GFIncP1<-data.frame(GFIncP1)
+colnames(GFIncP1)<-c("years","factorincome" )
+plot(GFIncP1$years, GFIncP1$factorincome, xlab="Jahr", ylab="Gini Bruttofaktoreinkommen")
+```
+```{r Gini NationalEinkommen}
+GNIncP1 <- rbind(T2008P1[2,3], T2009P1[2,3], T2010P1[2,3], T2011P1[2,3], T2012P1[2,3], T2013P1[2,3], T2014P1[2,3], T2015P1[2,3], T2016P1[2,3])
+GNIncP1 <- cbind(years, GNIncP1)
+GNIncP1<-data.frame(GNIncP1)
+colnames(GNIncP1)<-c("years","nationalincome" )
+plot(GNIncP1$years, GNIncP1$nationalincome, xlab="Jahr", ylab="Gini Bruttonationaleinkommen")
+```
+
+```{r Gini verfügbares Einkommen}
+GVIncP1 <- rbind(T2008P1[3,3], T2009P1[3,3], T2010P1[3,3], T2011P1[3,3], T2012P1[3,3], T2013P1[3,3], T2014P1[3,3], T2015P1[3,3], T2016P1[3,3])
+GVIncP1 <- cbind(years, GVIncP1)
+GVIncP1<-data.frame(GVIncP1)
+colnames(GVIncP1)<-c("years","vfgbinc" )
+plot(GVIncP1$years, GVIncP1$vfgbinc, xlab="Jahr", ylab="Gini verfügbares Nettoeinkommen")
+```
+
+```{r P8020 Faktor Einkommen}
+PFIncP1 <- rbind(T2008P1[1,4], T2009P1[1,4], T2010P1[1,4], T2011P1[1,4], T2012P1[1,4], T2013P1[1,4], T2014P1[1,4], T2015P1[1,4], T2016P1[1,4])
+PFIncP1 <- cbind(years, PFIncP1)
+PFIncP1<-data.frame(PFIncP1)
+colnames(PFIncP1)<-c("years","factorincome" )
+plot(PFIncP1$years, PFIncP1$factorincome, xlab="Jahr", ylab="P80/20 Bruttofaktoreinkommen")
+```
+
+```{r P8020 verfügbares Einkommen}
+#Verfügbares Einkommen
+PVIncP1 <- rbind(T2008P1[3,4], T2009P1[3,4], T2010P1[3,4], T2011P1[3,4], T2012P1[3,4], T2013P1[3,4], T2014P1[3,4], T2015P1[3,4], T2016P1[3,4])
+PVIncP1 <- cbind(years, PVIncP1)
+PVIncP1<-data.frame(PVIncP1)
+colnames(PVIncP1)<-c("years","vfgbinc" )
+plot(PVIncP1$years, PVIncP1$vfgbinc, xlab="Jahr", ylab="P80/20 verfügbares Nettoeinkommen")
+```
+
+```{r T10S Faktor Einkommen}
+TFIncP1 <- rbind(T2008P1[1,5], T2009P1[1,5], T2010P1[1,5], T2011P1[1,5], T2012P1[1,5], T2013P1[1,5], T2014P1[1,5], T2015P1[1,5], T2016P1[1,5])
+TFIncP1 <- cbind(years, TFIncP1)
+TFIncP1<-data.frame(TFIncP1)
+colnames(TFIncP1)<-c("years","factorincome" )
+plot(TFIncP1$years, TFIncP1$factorincome, xlab="Jahr", ylab="Top 10% Bruttofaktoreinkommen")
+```
+
+```{r T10S Verfügbares Einkommen}
+TVIncP1 <- rbind(T2008P1[3,5], T2009P1[3,5], T2010P1[3,5], T2011P1[3,5], T2012P1[3,5], T2013P1[3,5], T2014P1[3,5], T2015P1[3,5], T2016P1[3,5])
+TVIncP1 <- cbind(years, TVIncP1)
+TVIncP1<-data.frame(TVIncP1)
+colnames(TVIncP1)<-c("years","vfgbinc" )
+plot(TVIncP1$years, TVIncP1$vfgbinc, xlab="Jahr", ylab="Top 10% verfügbares Nettoeinkommen")
+```
+```{r Veränderungen der Indikatoren}
+dMean <- rbind((MeanP1T[1,9] - MeanP1T[1,1]),(MeanP1T[3,9] - MeanP1T[3,1]))
+dMedian <- rbind((MedianP1T[1,9] - MedianP1T[1,1]),(MedianP1T[3,9] - MedianP1T[3,1]))
+dGini <- rbind((GiniP1T[1,9] - GiniP1T[1,1]),(GiniP1T[3,9] - GiniP1T[3,1]))
+dP8020 <- rbind((P8020P1T[1,9] - P8020P1T[1,1]),(P8020P1T[3,9] - P8020P1T[3,1]))
+dT10S <- rbind((T10SP1T[1,9] - T10SP1T[1,1]),(T10SP1T[3,9] - T10SP1T[3,1]))
+dGT <- cbind(dMean, dMedian, dGini, dP8020, dT10S)
+rownames(dGT) <- c("Bruttofaktoreinkommen", "verfügbares Nettoeinkommen")
+colnames(dGT) <- c("ΔMittelwert", "ΔMedian", "ΔGini", "ΔP80/20", "ΔTop 10% Share")
+```
+# ALS NÄCHSTES BITTE REGRESSIONS FILE AUSFÜHREN
