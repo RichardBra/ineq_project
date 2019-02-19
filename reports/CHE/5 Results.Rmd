@@ -1,0 +1,54 @@
+---
+title: "Untitled"
+author: "Branco & Zadeyan"
+date: "11 Februar 2019"
+output:
+  pdf_document: default
+  html_document: default
+  word_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+#Zusammenfassung aller Ergebnisse (sowohl von den Ungleichheitsindikatoren nach P1 bzw. P2, als auch Regressionsoutputs und Tabellen)
+```{r}
+#Tabellen für Indikatoren
+#Tabelle für Indikaoren nach P1
+View(P1)
+#Tabelle für Indikaoten nach P2
+View(P2)
+```
+
+```{r include=FALSE}
+# Stargazer um Ergebnisse der Regressionen darzustellen 
+install.packages("stargazer")
+library(stargazer)
+```
+
+```{r}
+# Ergebnisse der allgemeinen Lohnregression
+results1 <- stargazer(wageols, wageols1, wageols2, title="Ergebnisse", align=TRUE, dep.var.labels=c("Logarithmierter Stundenlohn"), type="text")
+
+# Ergebnisse der Lohnregression mit Fokus auf Bildung mit EU-Bürgern
+results2 <- stargazer(edueuols1, edueuols2, edueuols3, align=TRUE, dep.var.labels=c("Logarithmierter Stundenlohn"), type="text")
+
+# Ergebnisse der Lohnregression mit Fokus auf Bildung von Drittstaatangehörigen
+results3 <- stargazer(eduothols1, eduothols2, eduothols3, align=TRUE, dep.var.labels=c("Logarithmierter Stundenlohn"), type="text")
+```
+```{r}
+#Tabellen für Regressionsstichprobe
+# Durchschnittseinkommen nach Herkunft
+View(MeanIncomeTabelle)
+# Medianeinkommen nach Herkunft
+View(MedianIncomeTabelle)
+# Gini-Koeffizient nach Herkunft
+View(GiniTabelle)
+# Akademikeranteil nach Herkunft
+View(Anteiltabelle)
+```
+
+#ENDE DES CODES
+
+
+
